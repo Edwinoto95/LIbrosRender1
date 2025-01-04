@@ -1,0 +1,55 @@
+
+{% extends "plantilla.html" %}
+
+{% block contenido1 %}
+<div class="row mt-5">
+    <div class="col-12 mb-4">
+        <form method="get" class="d-flex mb-4">
+            <input type="text" name="q" class="form-control" placeholder="Buscar libros por título" value="{{ query }}">
+            <button type="submit" class="btn btn-primary ms-2">Buscar</button>
+        </form>
+    </div>
+
+    <!-- Formulario de filtrado por precio -->
+    <div class="col-12 mb-4">
+        <form method="get" class="d-flex">
+            <input type="number" name="precio_min" class="form-control" placeholder="Precio mínimo" value="{{ precio_min }}" min="0">
+            <input type="number" name="precio_max" class="form-control ms-2" placeholder="Precio máximo" value="{{ precio_max }}" min="0">
+            <button type="submit" class="btn btn-secondary ms-2">Filtrar</button>
+        </form>
+    </div>
+
+    {% if user.is_authenticated %}
+    <div class="col-12 mb-4">
+        <a href="{% url 'agregar_libro' %}" class="btn btn-success">
+            <i class="fas fa-plus"></i> Agregar Nuevo Libro
+        </a>
+    </div>
+    {% endif %}
+    
+    {% for libro in libros %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow">
+            {% if libro.imagen %}
+                <img src="{{ libro.imagen.url }}" class="card-img-top" alt="{{ libro.titulo }}" style="height: 300px; object-fit: cover;">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ libro.titulo }}</h5>
+                <p class="card-text">{{ libro.descripcion|truncatechars:100 }}</p>
+                <p class="card-text">
+                    <strong>Precio:</strong> ${{ libro.precio }}<br>
+                    <strong>Estado:</strong> {{ libro.get_estado_display }}
+                </p>
+                <a href="{% url 'libro_detalle' libro.pk %}" class="btn btn-primary">Ver Detalles</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center">
+        <div class="alert alert-info">
+            No hay libros disponibles actualmente.
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "plantilla.html" %}
+
+{% block contenido1 %}
+<div class="card shadow">
+    <div class="row g-0">
+        <div class="col-md-4">
+            {% if libro.imagen %}
+                <img src="{{ libro.imagen.url }}" class="img-fluid rounded-start h-100 object-fit-cover" alt="{{ libro.titulo }}">
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h2 class="card-title">{{ libro.titulo }}</h2>
+                <p class="card-text">{{ libro.descripcion }}</p>
+                <div class="mt-3">
+                    <p><strong>Precio:</strong> ${{ libro.precio }}</p>
+                    <p><strong>Estado:</strong> {{ libro.get_estado_display }}</p>
+                    <p><strong>Vendedor:</strong> {{ libro.vendedor.username }}</p>
+                    <p class="badge bg-success">{{ libro.disponible|yesno:"Disponible,No disponible" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if user == libro.vendedor %}
+<div class="mt-4">
+    <a href="{% url 'editar_libro' libro.pk %}" class="btn btn-primary">Editar Libro</a>
+    <!-- Enlace para eliminar el libro -->
+    <a href="{% url 'eliminar_libro' libro.pk %}" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este libro?')">Eliminar Libro</a>
+</div>
+{% endif %}
+{% endblock %}

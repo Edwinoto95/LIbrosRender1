@@ -1,0 +1,15 @@
+{% extends "plantilla.html" %}
+
+{% block contenido1 %}
+<div class="row mt-5">
+    {% for libro in libros %}
+        <div class="col-md-4">
+            <h3>{{ libro.titulo }}</h3>
+            <p>Precio: ${{ libro.precio }}</p>
+            <a href="{% url 'comprar_libro' libro.pk %}">Comprar</a>
+        </div>
+    {% empty %}
+        <p>No hay libros disponibles para compra.</p>
+    {% endfor %}
+</div>
+{% endblock %}

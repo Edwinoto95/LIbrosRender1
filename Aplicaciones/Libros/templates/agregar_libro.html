@@ -1,0 +1,117 @@
+{% extends "plantilla.html" %}
+
+{% block contenido1 %}
+<div class="card shadow-xl border-0 rounded-3">
+    <div class="card-header bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white text-center p-4">
+        <h3 class="card-title mb-0 fs-2">{% if libro %}Editar{% else %}Agregar{% endif %} Libro</h3>
+    </div>
+    <div class="card-body bg-light py-5 px-4">
+        <form method="post" enctype="multipart/form-data" id="libroForm">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-4 position-relative">
+                <label for="{{ field.id_for_label }}" class="form-label fs-5 fw-bold text-secondary">{{ field.label }}</label>
+                <div class="input-group">
+                    {{ field }}
+                </div>
+                {% if field.errors %}
+                <div class="text-danger position-absolute" style="top: 0; right: 0;">
+                    {% for error in field.errors %}
+                        <small class="d-block">{{ error }}</small>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% if field.help_text %}
+                    <div class="form-text text-muted mt-1">{{ field.help_text }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-lg btn-gradient w-100 py-3 px-5 border-0 rounded-3 shadow-lg transition-all ease-in-out duration-300 hover:scale-105">{% if libro %}Actualizar Libro{% else %}Agregar Nuevo Libro{% endif %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    $("#libroForm").validate({
+        rules: {
+            titulo: {
+                required: true,
+                letras: true,
+                minlength: 3
+            },
+            descripcion: {
+                required: true,
+                minlength: 10
+            },
+            precio: {
+                required: true,
+                number: true,
+                min: 0
+            }
+        },
+        messages: {
+            titulo: {
+                required: "¡Por favor, ingresa un título!",
+                minlength: "El título debe tener al menos 3 caracteres."
+            },
+            descripcion: {
+                required: "¡Por favor, ingresa una descripción!",
+                minlength: "La descripción debe tener al menos 10 caracteres."
+            },
+            precio: {
+                required: "¡Por favor, ingresa un precio!",
+                number: "¡Por favor, ingresa un número válido!",
+                min: "El precio debe ser mayor a 0."
+            }
+        },
+        errorPlacement: function(error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('.mb-4').append(error);
+        }
+    });
+});
+</script>
+
+<style>
+/* Estilo de fondo gradiente en el encabezado */
+.card-header {
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+}
+
+/* Estilo del botón en el formulario */
+.btn-gradient {
+    background: linear-gradient(45deg, #ff0077, #ffb900);
+    color: white;
+    transition: background 0.3s, transform 0.3s;
+}
+.btn-gradient:hover {
+    background: linear-gradient(45deg, #ff7b00, #ff0088);
+    transform: scale(1.05);
+}
+
+/* Mejoras en el diseño de los campos */
+.input-group input {
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Personalización de los mensajes de error */
+.invalid-feedback {
+    font-size: 0.875rem;
+    color: #ff0000;
+}
+
+/* Animación del fondo al pasar el cursor */
+input, textarea {
+    transition: all 0.3s ease;
+}
+input:focus, textarea:focus {
+    border-color: #6a11cb;
+    box-shadow: 0 0 5px #6a11cb;
+}
+</style>
+
+{% endblock %}
